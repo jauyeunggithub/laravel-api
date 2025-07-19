@@ -13,6 +13,7 @@ class UserAuthTest extends TestCase
 
     public function test_user_can_register()
     {
+        // Register the user without authentication needed
         $response = $this->postJson('/api/register', [
             'name' => 'John Doe',
             'email' => 'john@example.com',
@@ -48,12 +49,11 @@ class UserAuthTest extends TestCase
 
     public function test_user_can_access_authenticated_routes()
     {
-        // First, create a user and log them in
+        // First, create a user and authenticate using Sanctum
         $user = User::factory()->create();
-        Sanctum::actingAs($user);
 
-        // Access a protected route
-        $response = $this->getJson('/api/user');
+        // Use actingAs to authenticate the user
+        $response = $this->actingAs($user)->getJson('/api/user');
         $response->assertStatus(200);
         $response->assertJson([
             'id' => $user->id,
@@ -63,6 +63,7 @@ class UserAuthTest extends TestCase
 
     public function test_user_cannot_login_with_invalid_credentials()
     {
+        // Attempt to login with invalid credentials
         $response = $this->postJson('/api/login', [
             'email' => 'nonexistent@example.com',
             'password' => 'wrongpassword',
