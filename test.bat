@@ -1,8 +1,8 @@
 @echo off
 
-REM Ensure that Docker Compose is running the containers
-echo Starting Docker Compose...
-docker-compose up -d
+REM Ensure that Docker Compose is running and rebuild containers
+echo Starting Docker Compose and rebuilding containers...
+docker-compose up --build -d
 
 REM Wait for the containers to be ready (optional, adjust based on your needs)
 echo Waiting for containers to be ready...
