@@ -22,23 +22,24 @@ class CommentTest extends TestCase
         // Authenticate the user using Sanctum
         Sanctum::actingAs($user);
 
-        // Create a comment on the post
+        // Create a comment on the post by passing the correct 'post_id' in the request
         $response = $this->postJson("/api/posts/{$post->id}/comments", [
-            'comment' => 'This is a test comment.',
+            'content' => 'This is a test comment.',
         ]);
 
+        // Ensure the status and message are correct
         $response->assertStatus(200);
         $response->assertJson([
             'message' => 'Comment posted and email sent',
         ]);
 
-        // Assert the comment is saved
+        // Assert the comment is saved in the database, checking for 'post_id' instead of 'commentable_id'
         $this->assertDatabaseHas('comments', [
-            'comment' => 'This is a test comment.',
-            'commentable_type' => Post::class,
-            'commentable_id' => $post->id,
+            'content' => 'This is a test comment.',
+            'post_id' => $post->id,  // Assert that the comment is associated with the post correctly
         ]);
     }
+
 
     public function test_comment_is_associated_with_post()
     {
@@ -63,7 +64,7 @@ class CommentTest extends TestCase
 
         // Try creating a comment without authentication
         $response = $this->postJson("/api/posts/{$post->id}/comments", [
-            'comment' => 'This is a test comment.',
+            'content' => 'This is a test comment.',
         ]);
 
         $response->assertStatus(401);

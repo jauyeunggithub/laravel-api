@@ -2,8 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Comment;
+use App\Models\User;
+use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
@@ -14,23 +15,22 @@ class SendEmailTest extends TestCase
 
     public function test_send_email()
     {
-        // Fake mail to avoid actually sending emails
-        Mail::fake();
-
-        // Create and authenticate a user
+        // Create a user and post
         $user = User::factory()->create();
-        $this->actingAs($user);
+        $post = Post::factory()->create();
 
-        // Create a comment (assuming a post ID is required for the comment)
+        // Create a comment using the factory and associate it with the post
         $comment = Comment::factory()->create([
-            'commentable_type' => 'App\Models\Post', // Adjust this as needed
-            'commentable_id' => 1, // Assuming there's a post with ID 1, adjust as needed
+            'user_id' => $user->id,
+            'commentable_id' => $post->id,
+            'commentable_type' => Post::class,
         ]);
 
-        // Trigger the email sending logic
+        // Simulate sending the email (you may have a mailable class to send the email)
+        Mail::fake();
         Mail::to('admin@example.com')->send(new \App\Mail\CommentReceived($comment));
 
-        // Assert that the email was sent
+        // Assert that the mail was sent
         Mail::assertSent(\App\Mail\CommentReceived::class);
     }
 }

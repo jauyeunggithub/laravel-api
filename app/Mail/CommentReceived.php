@@ -11,11 +11,11 @@ class CommentReceived extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $comment;
+    public $content;
 
-    public function __construct(Comment $comment)
+    public function __construct(Comment $content)
     {
-        $this->comment = $comment;
+        $this->content = $content;
     }
 
     public function build()

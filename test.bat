@@ -4,10 +4,6 @@ REM Ensure that Docker Compose is running and rebuild containers
 echo Starting Docker Compose and rebuilding containers...
 docker-compose up --build -d
 
-REM Wait for the containers to be ready (optional, adjust based on your needs)
-echo Waiting for containers to be ready...
-timeout /t 10
-
 REM Remove the existing SQLite database file (if it exists)
 echo Removing existing SQLite database file...
 docker-compose exec app rm -f /var/www/html/database/database.sqlite

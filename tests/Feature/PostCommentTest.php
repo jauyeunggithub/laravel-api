@@ -18,7 +18,7 @@ class PostCommentTest extends TestCase
         // Create and authenticate the user
         $user = User::factory()->create();
         $response = $this->actingAs($user)->postJson('/api/posts/1/comments', [
-            'comment' => 'This is a test comment',
+            'content' => 'This is a test comment',
         ]);
 
         // Assert that the comment was successfully posted and email sent
@@ -31,7 +31,7 @@ class PostCommentTest extends TestCase
 
         // Optionally, check the comment's content in the database
         $this->assertDatabaseHas('comments', [
-            'comment' => 'This is a test comment',
+            'content' => 'This is a test comment',
             'commentable_id' => 1,  // Assuming the post ID is 1
             'commentable_type' => Post::class,
         ]);

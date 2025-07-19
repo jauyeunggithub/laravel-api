@@ -5,6 +5,6 @@
 </head>
 <body>
     <h1>New Comment on Post: {{ $comment->commentable->title }}</h1>
-    <p>{{ $comment->comment }}</p>
+    <p>{{ $comment->content }}</p>
 </body>
 </html>

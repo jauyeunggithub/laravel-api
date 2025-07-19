@@ -13,11 +13,19 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->text('comment');
-            $table->morphs('commentable');  // This creates 'commentable_id' and 'commentable_type'
+            $table->text('content');  // Add the 'content' column here
+            $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('user_id');
+            $table->string('commentable_type');
+            $table->unsignedBigInteger('commentable_id');
             $table->timestamps();
+
+            // Add foreign keys and other constraints
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
+
 
     /**
      * Reverse the migrations.
