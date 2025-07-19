@@ -76,9 +76,9 @@ class CommentTest extends TestCase
     {
         // Create a user and authenticate the user
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->postJson('/api/comments', [
-            'content' => 'This is a comment.',
-            'post_id' => 1,  // Example Post ID, adjust accordingly
+        $post = Post::factory()->create();
+        $response = $this->actingAs($user)->postJson("/api/posts/{$post->id}/comments", [
+            'content' => 'This is a test comment.',
         ]);
 
         $response->assertStatus(200);  // Adjust the status as needed (e.g., 201 for creation)
@@ -88,8 +88,8 @@ class CommentTest extends TestCase
 
         // Assert the comment is saved in the database
         $this->assertDatabaseHas('comments', [
-            'content' => 'This is a comment.',
-            'commentable_id' => 1,  // Assuming the post ID is 1
+            'content' => 'This is a test comment.',
+            'commentable_id' => $post->id,  // Assuming the post ID is 1
             'commentable_type' => Post::class,
         ]);
     }

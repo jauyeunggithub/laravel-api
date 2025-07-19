@@ -17,22 +17,28 @@ class PostCommentTest extends TestCase
     {
         // Create and authenticate the user
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->postJson('/api/posts/1/comments', [
+        Sanctum::actingAs($user);
+
+        // Create a post for testing
+        $post = Post::factory()->create();
+
+        // Make the request to post a comment
+        $response = $this->postJson('/api/posts/' . $post->id . '/comments', [
             'content' => 'This is a test comment',
         ]);
 
-        // Assert that the comment was successfully posted and email sent
+        // Assert that the comment was successfully posted
         $response->assertStatus(200);
         $response->assertJson(['message' => 'Comment posted and email sent']);
 
-        // Optionally, you can also check if the post now has one comment
-        $post = Post::find(1); // Make sure the post with ID 1 exists
+        // Optionally, check if the post now has one comment
+        $post->refresh();
         $this->assertCount(1, $post->comments);
 
         // Optionally, check the comment's content in the database
         $this->assertDatabaseHas('comments', [
             'content' => 'This is a test comment',
-            'commentable_id' => 1,  // Assuming the post ID is 1
+            'commentable_id' => $post->id,
             'commentable_type' => Post::class,
         ]);
     }
